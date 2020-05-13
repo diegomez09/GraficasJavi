@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChartDataSets, ChartOptions } from 'chart.js';
+import { Color, Label } from 'ng2-charts';
 
 @Component({
   selector: 'app-graficas',
@@ -8,14 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GraficasComponent implements OnInit {
 
-  constructor() { 
-    this.generarValores();    
-  }
-
-  ngOnInit(): void {
-    
-  }
-
+  recorridoSumatoria = [];
+  posicion = [];
+  
   generarValores(){
     let inicioXN=0;
     let finXN = 4;
@@ -25,10 +21,10 @@ export class GraficasComponent implements OnInit {
     let resultadosUno = [];
     let resultadosDos = [];
     let resultadosTres = [];
-    let posicion = [];
-    let recorridoSumatoria = [];
+    
+   
     for(let i = inicioXN; i <= finXN; i++){
-      posicion.push(i);
+      this.posicion.push(i);
       resultadosUno.push(this.valoresFuncionUno(i));      
       resultadosDos.push(this.valoresFuncionDos(i));      
       resultadosTres.push(this.valoresFuncionTres(i));            
@@ -44,15 +40,15 @@ export class GraficasComponent implements OnInit {
       suma = suma + resultadosUno[i];
       console.log(suma);
       console.log('Sumatoria en posición '+i + ' = '+suma);
-      recorridoSumatoria.push(suma);
+      this.recorridoSumatoria.push(suma);
     }
     let resta = suma;
     for(let i = 0; i < resultadosUno.length ; i++){
       resta = resta - resultadosUno[i];
       console.log('Restando en '+i +' = '+ resta);
-      recorridoSumatoria.push(suma);
+      this.recorridoSumatoria.push(suma);
     }
-    console.log(recorridoSumatoria);
+    console.log(this.recorridoSumatoria);
   }
 
   valoresFuncionDos(i){ 
@@ -70,5 +66,50 @@ export class GraficasComponent implements OnInit {
   valoresFuncionTres(i){
     //Asignamos la funcion dada
   }
+  
+  
+
+  public lineChartData: ChartDataSets[] = [
+    { data: this.recorridoSumatoria, label: 'Valores Función' },];
+  public lineChartLabels: Label[] = this.posicion;
+  public lineChartOptions: (ChartOptions & { annotation: any }) = {
+    responsive: true,
+    annotation: {
+      annotations: [
+        {
+          type: 'line',
+          mode: 'vertical',
+          scaleID: 'x-axis-0',
+          value: 'March',
+          borderColor: 'orange',
+          borderWidth: 2,
+          label: {
+            enabled: true,
+            fontColor: 'orange',
+            content: 'LineAnno'
+          }
+        },
+      ],
+    },
+  };
+  public lineChartColors: Color[] = [
+    {
+      borderColor: 'red',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    },
+  ];
+  public lineChartLegend = true;
+  public lineChartType = 'line';
+  public lineChartPlugins = [];
+
+  constructor() { 
+    this.generarValores();    
+  }
+
+  ngOnInit(): void {
+    
+  }
+
+
 
 }
