@@ -1,12 +1,15 @@
-<div style="display: block;">
-    <canvas baseChart width="400" height="400"
-      [datasets]="lineChartData"
-      [labels]="lineChartLabels"
-      [options]="lineChartOptions"
-      [colors]="lineChartColors"
-      [legend]="lineChartLegend"
-      [chartType]="lineChartType"
-      [plugins]="lineChartPlugins">
-    </canvas>
+<div class="row m-3">
+  <div class="" *ngFor="let i of arregloDeObjetos">  
+    <div class="col">
+      <canvas baseChart width="400" height="400"
+        [datasets]="[i.valores]"
+        [labels]="i.posiciones"
+        [options]="lineChartOptions"
+        [colors]="lineChartColors"
+        [legend]="lineChartLegend"
+        [chartType]="lineChartType"
+        [plugins]="lineChartPlugins">
+      </canvas>    
   </div>
-  
+    </div>  
+</div>

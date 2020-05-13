@@ -2,6 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, Label } from 'ng2-charts';
 
+interface GraficaIndividual {
+  posiciones: Number[],
+  valores:ChartDataSets,
+}
+
 @Component({
   selector: 'app-graficas',
   templateUrl: './graficas.component.html',
@@ -9,71 +14,88 @@ import { Color, Label } from 'ng2-charts';
 })
 export class GraficasComponent implements OnInit {
 
-  recorridoSumatoria = [];
-  posicion = [];
+  arregloDeObjetos: GraficaIndividual[] = [];
+  recorridoSumatoriaUno = [];
+  //Areglo de las todos los puntos a graficar
+  posicion = [];  
+  //Limites de xn siempre inicia en 0
+  inicioXN=0;
+  //Valor donde terminará de hacer la convolución
+  finXN = 2;
+  //Valor inicio hn
+  inicioHN = 0;
+  //Fin hn
+  finHN = -5;
+  //Magnitud funcion inversa
+  valorHN = 1
+  resultadosUno = [];
+  resultadosDos = [];
+  resultadosTres = [];
   
-  generarValores(){
-    let inicioXN=0;
-    let finXN = 4;
-    let inicioHN = 0;
-    let finHN = -5;
-    let valorHN = 1
-    let resultadosUno = [];
-    let resultadosDos = [];
-    let resultadosTres = [];
+  
+  generardata(){    
     
-   
-    for(let i = inicioXN; i <= finXN; i++){
+    let i = 0;
+    for(i = this.inicioXN; i <= this.finXN; i++){      
       this.posicion.push(i);
-      resultadosUno.push(this.valoresFuncionUno(i));      
-      resultadosDos.push(this.valoresFuncionDos(i));      
-      resultadosTres.push(this.valoresFuncionTres(i));            
-    }
+      this.resultadosUno.push(this.dataFuncionUno(i));
+      //console.log(i);     
+      //this.resultadosDos.push(this.dataFuncionDos(i));      
+      //this.resultadosTres.push(this.dataFuncionTres(i));  
+      
+      //console.log(this.resultadosUno);
+      console.log(this.posicion);      
+      this.arregloDeObjetos.push({
+        posiciones: this.posicion,
+        valores:
+        {   data: this.resultadosUno,
+            label : "Valores funcion"  }
+      }); 
+    }           
+      console.log(this.arregloDeObjetos);                 
     
-    //console.log(posicion);
-    //console.log(resultadosUno);
-    //console.log(resultadosDos);
-    //console.log(resultadosTres);
     //Sumatoria de principio a fin
     let suma = 0;
-    for(let i = 0 ; i < resultadosUno.length; i++){
-      suma = suma + resultadosUno[i];
-      console.log(suma);
-      console.log('Sumatoria en posición '+i + ' = '+suma);
-      this.recorridoSumatoria.push(suma);
+    for(let i = 0 ; i < this.resultadosUno.length; i++){
+      suma = suma + this.resultadosUno[i];
+      //console.log(suma);
+      //console.log('Sumatoria en posición '+i + ' = '+suma);
+      this.recorridoSumatoriaUno.push(suma);
     }
     let resta = suma;
-    for(let i = 0; i < resultadosUno.length ; i++){
-      resta = resta - resultadosUno[i];
-      console.log('Restando en '+i +' = '+ resta);
-      this.recorridoSumatoria.push(suma);
+    for(let i = 0; i < this.resultadosUno.length-1 ; i++){
+      resta = resta - this.resultadosUno[i];
+      //console.log('Restando el valor en '+i +' = '+ resta);
+      this.recorridoSumatoriaUno.push(resta);
     }
-    console.log(this.recorridoSumatoria);
+    //console.log(this.recorridoSumatoriaUno);
   }
 
-  valoresFuncionDos(i){ 
+  dataFuncionDos(i){ 
     //El valor que asignemos a alfa entre 0 y 1
     //Ej 0.5 , 0.7   
     const base = 2;    ;    
-    return (Math.pow(2,i));    
+    return (Math.pow(2,-i));    
   }
 
-  valoresFuncionUno(i){
+  dataFuncionUno(i){
     const alfa = 0.5;        
     return(Math.pow(alfa,i));
   }
 
-  valoresFuncionTres(i){
+  dataFuncionTres(i){
     //Asignamos la funcion dada
   }
-  
-  
+    
 
-  public lineChartData: ChartDataSets[] = [
-    { data: this.recorridoSumatoria, label: 'Valores Función' },];
-  public lineChartLabels: Label[] = this.posicion;
+  public lineChartData: ChartDataSets[] = 
+  [{ data: this.resultadosUno ,
+    label: 'data Función' },];
+
+  public lineChartLabels: Label[] = ['0','1'];
+
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
-    responsive: true,
+    responsive: false,
     annotation: {
       annotations: [
         {
@@ -81,8 +103,8 @@ export class GraficasComponent implements OnInit {
           mode: 'vertical',
           scaleID: 'x-axis-0',
           value: 'March',
-          borderColor: 'orange',
-          borderWidth: 2,
+          borderColor: 'red',
+          borderWidth: 1,
           label: {
             enabled: true,
             fontColor: 'orange',
@@ -103,7 +125,7 @@ export class GraficasComponent implements OnInit {
   public lineChartPlugins = [];
 
   constructor() { 
-    this.generarValores();    
+    this.generardata();    
   }
 
   ngOnInit(): void {
