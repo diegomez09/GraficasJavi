@@ -1,8 +1,9 @@
 <div class="row m-3">
   <div class="" *ngFor="let i of arregloDeObjetos">  
     <div class="col">
-      <canvas baseChart width="400" height="400"
-        [datasets]="[i.valores]"
+      <h1>{{i.valores.label}}</h1>
+      <canvas baseChart width="300" height="300"
+        [datasets]="i.valores"
         [labels]="i.posiciones"
         [options]="lineChartOptions"
         [colors]="lineChartColors"
@@ -11,5 +12,15 @@
         [plugins]="lineChartPlugins">
       </canvas>    
   </div>
-    </div>  
+    </div>    
 </div>
+<div class="flex-item m-3">
+  <table class="table table-responsive table-condensed" *ngFor="let item of recorridoSumatoriaUno; let i = index">
+    <tr>
+      <th>Posición del empalme F1: {{i}}</th>
+    </tr>
+  <h5 >
+    La sumatoria con el recorrido en es de : {{item}}
+  </h5>
+</table>
+</div>  
